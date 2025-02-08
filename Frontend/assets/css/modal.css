@@ -1,0 +1,96 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .spotify-player {
+    background-color: #282828;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    color: white;
+    display: flex;
+    gap: 20px;
+    position: relative;
+  }
+  
+  .webcam-section {
+    width: 300px;
+    height: 300px;
+    background: #181818;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .webcam-section video,
+  .webcam-section canvas,
+  .webcam-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .player-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .player-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .player-description {
+    color: #b3b3b3;
+    margin-bottom: 20px;
+  }
+  
+  .player-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .stress-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+  }
+  
+  .alert {
+    color: #ff4444;
+    font-weight: bold;
+    margin-top: 10px;
+  }

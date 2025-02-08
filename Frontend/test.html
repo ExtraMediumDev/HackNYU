@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drowsiness & Stress Checker</title>
+  <style>
+    body { 
+      text-align: center; 
+      font-family: Arial, sans-serif; 
+    }
+    video, img { 
+      border: 1px solid #ccc; 
+      margin: 10px; 
+    }
+    .alert {
+      color: red;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin: 10px;
+    }
+    #startButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Drowsiness & Stress Checker</h1>
+  
+  <!-- Start Button to ensure user interaction -->
+  <button id="startButton">Start Monitoring</button>
+  
+  <!-- Live video feed from the webcam -->
+  <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+  
+  <!-- Hidden canvas used to capture frames from the video -->
+  <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+  
+  <!-- Container for the annotated prediction image -->
+  <div>
+    <h3>Prediction Output:</h3>
+    <img id="result" width="640" height="480" alt="Prediction Result" />
+  </div>
+  
+  <!-- Container for stress predictions (only "Stress" will be shown) -->
+  <div>
+    <h3>Stress Prediction:</h3>
+    <div id="stressPrediction"></div>
+  </div>
+  
+  <!-- Container for alert messages -->
+  <div id="alerts"></div>
+  
+  <script>
+    const startButton = document.getElementById('startButton');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const resultImg = document.getElementById('result');
+    const stressPredictionDiv = document.getElementById('stressPrediction');
+    const alertsDiv = document.getElementById('alerts');
+    let intervalId = null;
+    
+    // Global counter to track consecutive "Stress" readings above threshold.
+    let stressConsecutiveCount = 0;
+    const STRESS_THRESHOLD = 0.7;       // Confidence threshold
+    const STRESS_CONSECUTIVE_LIMIT = 10;  // Number of consecutive readings required
+
+    // Function to start video capture and predictions.
+    function startMonitoring() {
+      video.style.display = 'block';
+      
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+        })
+        .catch(err => {
+          console.error("Error accessing webcam:", err);
+        });
+
+      // Start capturing frames at regular intervals (e.g., every 500ms)
+      intervalId = setInterval(captureAndPredict, 500);
+      
+      startButton.disabled = true;
+    }
+
+    // Capture a frame from the video, send it to the backend for predictions,
+    // and update the page with the response.
+    function captureAndPredict() {
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append('image', blob, 'frame.jpg');
+        
+        fetch('/api/predict', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Update the annotated prediction image if available.
+          if (data.image) {
+            resultImg.src = "data:image/jpeg;base64," + data.image;
+          }
+          
+          // Process stress predictions.
+          // We expect data.stress_predictions either as an array or an object.
+          let stressHTML = '';
+          let stressConfidence = null; // We'll store the "Stress" reading confidence.
+          
+          if (data.stress_predictions) {
+            if (Array.isArray(data.stress_predictions)) {
+              data.stress_predictions.forEach(pred => {
+                if (pred.class && pred.class.toLowerCase() === "stress") {
+                  // Display only stress predictions.
+                  stressHTML += `<p>${pred.class}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
+                  stressConfidence = pred.confidence;
+                }
+              });
+            } else {
+              for (const label in data.stress_predictions) {
+                if (label.toLowerCase() === "stress") {
+                  const pred = data.stress_predictions[label];
+                  stressHTML += `<p>${label}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
+                  stressConfidence = pred.confidence;
+                }
+              }
+            }
+            stressPredictionDiv.innerHTML = stressHTML;
+          }
+          
+          // Track consecutive stress readings above threshold.
+          if (stressConfidence !== null && stressConfidence > STRESS_THRESHOLD) {
+            stressConsecutiveCount++;
+          } else {
+            stressConsecutiveCount = 0;
+          }
+          
+          // If stress readings exceed the threshold for 10 consecutive frames, show warning.
+          if (stressConsecutiveCount >= STRESS_CONSECUTIVE_LIMIT) {
+            alertsDiv.innerHTML = '<p class="alert">Stress Alert: High stress detected for 10 consecutive readings!</p>';
+            // Optionally, play an alert sound:
+            // new Audio('/static/stress_alert.mp3').play();
+          } else {
+            alertsDiv.innerHTML = ''; // Clear alert if condition is not met.
+          }
+          
+          // (Optional) You can also log data for debugging:
+          // console.log("Stress Confidence:", stressConfidence, "Consecutive Count:", stressConsecutiveCount);
+        })
+        .catch(err => console.error(err));
+      }, 'image/jpeg');
+    }
+
+    // Attach the startMonitoring function to the start button's click event.
+    startButton.addEventListener('click', startMonitoring);
+  </script>
+</body>
+</html>
