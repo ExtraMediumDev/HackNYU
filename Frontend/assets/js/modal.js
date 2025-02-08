@@ -9,17 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
                       <canvas id="canvas" style="display: none;"></canvas>
                       <img id="result" alt="Prediction Result" />
                   </div>
-                  <div class="player-content">
-                      <h2 class="player-title">Stress & Drowsiness Monitor</h2>
-                      <p class="player-description">Real-time monitoring of your stress levels</p>
-                      <div class="player-controls">
-                          <button id="startButton" class="primary">Start Monitoring</button>
-                      </div>
-                      <div class="stress-info">
-                          <h3>Stress Level:</h3>
-                          <div id="stressPrediction"></div>
-                      </div>
+                  <div class="metrics-section">
+                      <div class="metrics-title">Stress Level</div>
+                      <div id="stressPrediction" class="metrics-value">Not measured</div>
+                      <div class="metrics-title">Drowsiness Level</div>
+                      <div id="drowsinessPrediction" class="metrics-value">Not measured</div>
                       <div id="alerts"></div>
+                  </div>
+                  <div class="player-controls">
+                      <button id="startButton" class="begin-story-btn">Begin Story</button>
                   </div>
               </div>
           </div>
@@ -45,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       stopMonitoring()
     })
   
-    // Webcam functionality
+    // Rest of the webcam functionality remains the same
     const video = document.getElementById("video")
     const canvas = document.getElementById("canvas")
     const resultImg = document.getElementById("result")
@@ -58,6 +56,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const STRESS_CONSECUTIVE_LIMIT = 10
   
     function startMonitoring() {
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.log(latitude, longitude);
+            },
+            (error) => {
+            console.error("Error getting location:", error.message);
+            }
+        );
+        } else {
+        console.error("Geolocation is not supported by this browser.");
+        }
+
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
@@ -108,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (Array.isArray(data.stress_predictions)) {
                 data.stress_predictions.forEach((pred) => {
                   if (pred.class && pred.class.toLowerCase() === "stress") {
-                    stressHTML += `<p>${pred.class}: ${(pred.confidence * 100).toFixed(2)}%</p>`
+                    stressHTML = `${(pred.confidence * 100).toFixed(2)}%`
                     stressConfidence = pred.confidence
                   }
                 })
@@ -116,12 +130,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (const label in data.stress_predictions) {
                   if (label.toLowerCase() === "stress") {
                     const pred = data.stress_predictions[label]
-                    stressHTML += `<p>${label}: ${(pred.confidence * 100).toFixed(2)}%</p>`
+                    stressHTML = `${(pred.confidence * 100).toFixed(2)}%`
                     stressConfidence = pred.confidence
                   }
                 }
               }
-              stressPredictionDiv.innerHTML = stressHTML
+              stressPredictionDiv.innerHTML = stressHTML || "Not detected"
             }
   
             if (stressConfidence !== null && stressConfidence > STRESS_THRESHOLD) {
@@ -131,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
   
             if (stressConsecutiveCount >= STRESS_CONSECUTIVE_LIMIT) {
-              alertsDiv.innerHTML = '<p class="alert">Stress Alert: High stress detected!</p>'
+              alertsDiv.innerHTML = '<p class="alert">High stress detected!</p>'
             } else {
               alertsDiv.innerHTML = ""
             }
@@ -142,3 +156,5 @@ document.addEventListener("DOMContentLoaded", () => {
   
     startButton.addEventListener("click", startMonitoring)
   })
+  
+  
