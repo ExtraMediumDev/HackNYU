@@ -4,7 +4,7 @@ from test import Audiobook
 import os
 
 app = Flask(__name__, static_folder='static')
-UPLOAD_FOLDER = "/Users/sriramnatarajan/Documents/newHack/EvenMoreFunProject/Backend/PDFS"
+UPLOAD_FOLDER = "/Users/sriramnatarajan/Documents/FinalHackathonNYU/HackNYU/Backend/static/PDFS"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # YOLO prediction blueprint registered at the '/api' prefix, but we can def change this later

@@ -2705,29 +2705,29 @@ input, select, textarea {
 						margin-bottom: 0;
 					}
 
-			.tiles article.style1 > .image:before {
-				background-color: #f2849e;
-			}
-
-			.tiles article.style2 > .image:before {
-				background-color: #7ecaf6;
-			}
-
-			.tiles article.style3 > .image:before {
-				background-color: #7bd0c1;
-			}
-
-			.tiles article.style4 > .image:before {
-				background-color: #c75b9b;
-			}
-
-			.tiles article.style5 > .image:before {
-				background-color: #ae85ca;
-			}
-
-			.tiles article.style6 > .image:before {
-				background-color: #8499e7;
-			}
+					.tiles article.style1 > .image:before {
+						background-color: rgba(242, 132, 158, 0.6); /* 60% opacity */
+					}
+					
+					.tiles article.style2 > .image:before {
+						background-color: rgba(126, 202, 246, 0.6);
+					}
+					
+					.tiles article.style3 > .image:before {
+						background-color: rgba(123, 208, 193, 0.6);
+					}
+					
+					.tiles article.style4 > .image:before {
+						background-color: rgba(199, 91, 155, 0.6);
+					}
+					
+					.tiles article.style5 > .image:before {
+						background-color: rgba(174, 133, 202, 0.6);
+					}
+					
+					.tiles article.style6 > .image:before {
+						background-color: rgba(132, 153, 231, 0.6);
+					}
 
 			body:not(.is-touch) .tiles article:hover > .image {
 				-moz-transform: scale(1.1);
@@ -3327,3 +3327,100 @@ input, select, textarea {
 			}
 
 		}
+
+		.header-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 60vh; /* Adjust height as needed */
+			overflow: hidden;
+			z-index: -1; /* Sends the image to the background */
+			border-bottom: 15px solid #000000; /* Change color and thickness */
+		}
+		
+		.header-image img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover; /* Ensures the image covers the full area */
+		}
+		
+		#header {
+			position: relative;
+			text-align: center;
+			color: white; /* Adjust text color for readability */
+			padding: 15vh 0; /* Adjust spacing */
+		}
+
+				/* New CSS for tiles */
+		.tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between tiles */
+    justify-content: center;
+    align-items: stretch;
+}
+
+	.tiles article {
+		width: 100%;
+		height: 600px; /* Adjust for uniform height */
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
+
+	.tiles article .image {
+		width: 100%;
+		height: 100%;
+		display: flex;
+	}
+
+	.tiles article .image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover; /* Ensure images fit the tile without distortion */
+	}
+
+
+	.tiles {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+		gap: 20px; /* Space between tiles */
+		justify-content: center;
+		align-items: stretch;
+	}
+	
+	.tiles article {
+		width: 100%;
+		aspect-ratio: 3 / 4; /* Maintain consistent aspect ratio */
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
+	
+	.tiles article .image {
+		width: 100%;
+		height: 100%;
+		display: flex;
+	}
+	
+	.tiles article .image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover; /* Prevent stretching and maintain aspect ratio */
+	}
+	
+
+	#main {
+		background: linear-gradient(to bottom, #b9e4f4,#aadbea, #79d0ea);
+		color: white;
+		padding: 50px 0; /* Keep padding reasonable */
+		position: relative; /* Ensure proper stacking */
+		z-index: 2; /* Make sure it's above other elements */
+		margin-top: 170px; /* Adjust so it doesn’t overlap */
+	}
+	
