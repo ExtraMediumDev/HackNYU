@@ -3336,16 +3336,47 @@ input, select, textarea {
 	
 
 	#main {
-		background: linear-gradient(to bottom, #b9e4f4,#aadbea, #79d0ea);
+		background: linear-gradient(to bottom, #0d0d2b, #1c1c3c, #0d0d2b);
 		color: white;
-		padding: 50px 0; /* Keep padding reasonable */
-		position: relative; /* Ensure proper stacking */
-		z-index: 2; /* Make sure it's above other elements */
-		margin-top: 170px; /* Adjust so it doesn’t overlap */
+		padding: 50px 0;
+		position: relative;
+		z-index: 2;
+		margin-top: 170px;
+		background-attachment: fixed;
+		overflow: hidden;
 	}
+	
+	#main::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 200%;
+		height: 200%;
+		/* Create a starry pattern using radial gradients */
+		background: 
+			radial-gradient(white 1px, transparent 1px),
+			radial-gradient(white 1px, transparent 1px);
+		background-position: 0 0, 25px 25px;
+		background-size: 50px 50px;
+		opacity: 0.3;
+		animation: moveStars 100s linear infinite;
+		z-index: -1;
+	}
+	
+	@keyframes moveStars {
+		from {
+			transform: translate(0, 0);
+		}
+		to {
+			transform: translate(-50%, -50%);
+		}
+	}
+	
+	
 	#stressSection {
 		display: none; /* Hide initially */
-	  }
+	}
 
 	  
 	
