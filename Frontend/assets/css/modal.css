@@ -14,124 +14,312 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
   
-  .modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.spotify-player {
+  background-color: #121212;
+  width: 100%;
+  max-width: 500px;
+  height: 85vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.webcam-section {
+  flex: 1;
+  width: 100%;
+  background: #181818;
+  overflow: hidden;
+  position: relative;
+}
+
+.webcam-section video,
+.webcam-section canvas,
+.webcam-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.metrics-section {
+  background: #282828;
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metrics-title {
+  font-size: 14px;
+  color: #b3b3b3;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.metrics-value {
+  font-size: 16px;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.player-controls {
+  background: #181818;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.begin-story-btn {
+  background: #1db954;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.2s ease;
+}
+
+.begin-story-btn:hover {
+  background: #1ed760;
+  transform: scale(1.04);
+}
+
+.begin-story-btn:disabled {
+  background: #404040;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+}
+
+.alert {
+  color: #ff4444;
+  font-weight: bold;
+  padding: 8px 16px;
+  background: rgba(255, 68, 68, 0.1);
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.player-controls {
+  background: #181818;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Improved play button styling */
+.play-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.play-button svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+}
+
+.play-button:disabled {
+  color: #404040;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Improved volume control styling */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.volume-icon {
+  color: #b3b3b3;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 4px;
+  background: #4d4d4d;
+  border-radius: 2px;
+  outline: none;
+  position: relative;
+  margin: 0;
+}
+
+/* Fixed slider thumb positioning */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -4px; /* Centers the thumb */
+  transition: all 0.2s;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover,
+.volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #1db954 var(--volume-percent, 100%), #4d4d4d var(--volume-percent, 100%));
+}
+
+.volume-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #1db954 var(--volume-percent, 100%), #4d4d4d var(--volume-percent, 100%));
+}
+
+.waiting-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.waiting-text {
+  color: #b3b3b3;
+  font-size: 16px;
+  margin-top: 32px;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+}
+
+.pulse-circle {
+  width: 160px;
+  height: 160px;
+  background: rgba(29, 185, 84, 0.1);
+  border-radius: 50%;
+  position: relative;
+  animation: mainPulse 2s ease-in-out infinite;
+}
+
+.pulse-circle::before,
+.pulse-circle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+
+.pulse-circle::before {
+  width: 120px;
+  height: 120px;
+  background: rgba(29, 185, 84, 0.2);
+  transform: translate(-50%, -50%);
+  animation: pulse 2s ease-in-out infinite 0.3s;
+}
+
+.pulse-circle::after {
+  width: 80px;
+  height: 80px;
+  background: #1db954;
+  transform: translate(-50%, -50%);
+  animation: pulse 2s ease-in-out infinite 0.6s;
+}
+
+@keyframes mainPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
   }
-  
-  .spotify-player {
-    background-color: #121212;
-    width: 100%;
-    max-width: 500px;
-    height: 85vh;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
+  50% {
+    transform: scale(1);
+    opacity: 0.5;
   }
-  
-  .webcam-section {
-    flex: 1;
-    width: 100%;
-    background: #181818;
-    overflow: hidden;
-    position: relative;
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
   }
-  
-  .webcam-section video,
-  .webcam-section canvas,
-  .webcam-section img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.8;
   }
-  
-  .metrics-section {
-    background: #282828;
-    padding: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
   }
-  
-  .metrics-title {
-    font-size: 14px;
-    color: #b3b3b3;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.8;
   }
-  
-  .metrics-value {
-    font-size: 16px;
-    color: white;
-    margin-bottom: 12px;
-  }
-  
-  .player-controls {
-    background: #181818;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .begin-story-btn {
-    background: #1db954;
-    color: white;
-    border: none;
-    padding: 12px 32px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: all 0.2s ease;
-  }
-  
-  .begin-story-btn:hover {
-    background: #1ed760;
-    transform: scale(1.04);
-  }
-  
-  .begin-story-btn:disabled {
-    background: #404040;
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 24px;
-    z-index: 10;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.7);
-  }
-  
-  .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .alert {
-    color: #ff4444;
-    font-weight: bold;
-    padding: 8px 16px;
-    background: rgba(255, 68, 68, 0.1);
-    border-radius: 4px;
-    margin-top: 8px;
-  }
-  
-  
+}

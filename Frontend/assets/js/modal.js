@@ -2,14 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // ------------------------------------------
     // 1) DYNAMIC MODAL INSERTION (unchanged)
     // ------------------------------------------
+
+    let currentAudio = null;
+
     const modalHTML = `
       <div class="modal-overlay" id="webcamModal">
         <div class="spotify-player">
-          <button class="close-button">&times;</button>
+          
           <div class="webcam-section">
+              <div class="waiting-container">
+                <div class="pulse-circle"></div>
+                <p class="waiting-text">Waiting for user to begin story...</p>
+              </div>
               <video id="video" autoplay style="display: none;"></video>
               <canvas id="canvas" style="display: none;"></canvas>
-              <img id="result" alt="Prediction Result" />
+              <img id="result"/>
           </div>
   
           <div class="metrics-section">
@@ -17,7 +24,30 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           
           <div class="player-controls">
-              <button id="startButton" class="begin-story-btn">Begin Story</button>
+            <button id="startButton" class="play-button">
+                <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+
+          <button class="close-button">
+            Close Story
+          </button>
+        
+            
+          <div class="volume-control">
+            <svg class="volume-icon" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <input 
+            type="range" 
+            class="volume-slider" 
+            min="0" 
+            max="100" 
+            value="100"
+            id="volumeSlider"
+            >
+            </div>
           </div>
         </div>
       </div>
@@ -30,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("webcamModal")
     const closeButton = modal.querySelector(".close-button")
     const startButton = document.getElementById("startButton")
+
+    const volumeSlider = document.getElementById('volumeSlider')
+    const playButton = document.getElementById('startButton')
   
     let selectedStoryKey = "" // Will store the key for the chosen story (e.g. "The Great Gatsby")
   
@@ -39,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault()
         // The key must match one in storiesData (loaded via stories.js)
         selectedStoryKey = tile.dataset.storyKey || ""
+        resetUIState()
         modal.classList.add("active")
       })
     })
@@ -47,6 +81,65 @@ document.addEventListener("DOMContentLoaded", () => {
     closeButton.addEventListener("click", () => {
       modal.classList.remove("active")
       stopMonitoring()
+      resetUIState()
+
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+    })
+
+    function resetUIState() {
+        // Clear the result image
+        const resultImg = document.getElementById("result")
+        if (resultImg) {
+          resultImg.src = ""
+          resultImg.style.display = "none"
+        }
+        
+        // Reset canvas
+        const canvas = document.getElementById("canvas")
+        const ctx = canvas.getContext("2d")
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        canvas.style.display = "none"
+        
+        // Reset video
+        const video = document.getElementById("video")
+        video.style.display = "none"
+        video.srcObject = null
+        
+        // Reset alerts
+        const alertsDiv = document.getElementById("alerts")
+        alertsDiv.innerHTML = ""
+        
+        // Show the waiting container (ensure it’s visible)
+        const waitingContainer = document.querySelector('.waiting-container')
+        if (waitingContainer) {
+          waitingContainer.style.display = "flex"  // or "block", depending on your layout
+        }
+        
+        // Reset play button state
+        const playButton = document.getElementById("startButton")
+        playButton.classList.remove('playing')
+        playButton.disabled = false
+      }
+      
+
+    volumeSlider.addEventListener('input', (e) => {
+        const value = e.target.value
+        // Update the slider background
+        volumeSlider.style.setProperty('--volume-percent', `${value}%`)
+        // If you're using HTML5 Audio elements, you can control their volume
+        document.querySelectorAll('audio').forEach(audio => {
+          audio.volume = value / 100
+        })
+    })
+      
+      // Update play button state
+    startButton.addEventListener('click', () => {
+        playButton.classList.toggle('playing')
+        // Your existing start/stop logic here
     })
   
     // ------------------------------------------
@@ -60,6 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
   
     function startMonitoring() {
       // Attempt geolocation (optional)
+
+      const waitingContainer = document.querySelector('.waiting-container')
+    
+      if (waitingContainer) {
+        waitingContainer.style.display = "none"
+      }
+
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -72,6 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         )
       } else {
+        if (waitingContainer) {
+            waitingContainer.style.display = "flex"
+        }
         console.error("Geolocation is not supported by this browser.")
       }
   
@@ -80,15 +183,20 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((stream) => {
           video.srcObject = stream
           video.style.display = "block"
+          document.querySelector('.webcam-section').classList.add('active')
           intervalId = setInterval(captureAndPredict, 500)
           startButton.disabled = true
         })
         .catch((err) => {
           console.error("Error accessing webcam:", err)
+          document.querySelector('.webcam-section').classList.remove('active')
         })
     }
   
     function stopMonitoring() {
+
+      document.querySelector('.webcam-section').classList.remove('active');
+
       if (intervalId) {
         clearInterval(intervalId)
         intervalId = null
@@ -188,10 +296,16 @@ document.addEventListener("DOMContentLoaded", () => {
   
         return new Promise((resolve) => {
           const audio = new Audio(audioUrl)
-          audio.onended = resolve
+          currentAudio = audio;
+
+          audio.onended = () => {
+            currentAudio = null;
+            resolve();
+          };
           audio.onerror = (err) => {
-            console.error("Error playing audio:", err)
-            resolve()
+            currentAudio = null;
+            console.error("Error playing audio:", err);
+            resolve();
           }
           audio.play()
         })
