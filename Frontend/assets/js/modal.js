@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ------------------------------------------
     // 4) TEXT-TO-SPEECH (ElevenLabs)
     // ------------------------------------------
-    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478" // Replace with your own or hide on server
+    const apiKey = "sk_3eeb50bac7ee2d77dc979d3da3a239fdcf62f8930bcff306" // Replace with your own or hide on server
     const voiceId = "21m00Tcm4TlvDq8ikWAM"
   
     async function speakText(text) {
