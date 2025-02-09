@@ -3,32 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>Driver De-Stress</title>
-  <!-- Link to the external CSS -->
+  <!-- Link to external CSS if needed -->
   <link rel="stylesheet" href="assets/css/main.css" />
   <style>
-    /* Background Animation */
-    @keyframes gradientAnimation {
-        0% { background: linear-gradient(to bottom, #b3e5fc, #81d4fa); } /* Light Blue */
-        25% { background: linear-gradient(to bottom, #b2ebf2, #4dd0e1); } /* Aqua */
-        50% { background: linear-gradient(to bottom, #80deea, #26c6da); } /* Teal */
-        75% { background: linear-gradient(to bottom, #64b5f6, #42a5f5); } /* Soft Blue */
-        100% { background: linear-gradient(to bottom, #b3e5fc, #81d4fa); } /* Light Blue (Loop back) */
-    }
-
+    /* Use a fixed gradient background */
     body {
-        animation: gradientAnimation 10s infinite alternate ease-in-out;
+        background: linear-gradient(to bottom, #b3e5fc, #81d4fa);
         font-family: "Source Sans Pro", Helvetica, sans-serif;
-        text-align: center;
-        color: white;
-        height: 100vh;
+        color: #333;  /* Dark gray for readability */
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
         transition: background 1s ease-in-out;
+        margin: 0;
+        padding-top: 100px; /* Increased to ensure content isn't covered by the navbar */
     }
 
-    /* Style the stress relief section */
+    /* Navbar styling */
+    nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(30, 30, 30, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 50px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 15px;
+    }
+
+    /* Stress options section */
     #stressSection {
         display: none;
         background: rgba(255, 255, 255, 0.2);
@@ -37,6 +50,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(10px);
         max-width: 500px;
+        margin-top: 20px;
     }
 
     button {
@@ -44,195 +58,365 @@
         border: none;
         padding: 15px 20px;
         font-size: 18px;
-        color: white;
+        color: #333;
         border-radius: 10px;
         cursor: pointer;
         transition: background 0.3s;
+        margin: 10px;
     }
-
     button:hover {
         background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Guided Breathing Section */
+    #breathingSection {
+      display: none; /* Hidden until the user chooses "Breathe" */
+      background: rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      max-width: 500px;
+      margin-top: 20px;
+    }
+    
+    /* Container for the breathing circle */
+    #breathingCircleContainer {
+      position: relative;
+      height: 320px;   /* Enough height to accommodate the scaled circle */
+      width: 100%;
+      margin-bottom: 20px; /* Extra space so text below is not overlapped */
+      overflow: hidden;  /* Clip any overflow from the circle animation */
+    }
+
+    /* The breathing circle is fixed in layout size;
+       its "breathing" is done via transform: scale() and translation so that it remains centered */
+    #breathingCircle {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      z-index: 1;
+      transition: transform 4s ease;
+    }
+
+    /* Breathing instructions */
+    #breathingInstructions {
+      font-size: 20px;
+      margin: 10px;
+      position: relative;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
 
-    <nav style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(30, 30, 30, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 50px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;">
-    
-    <!-- Brand Logo -->
-    <div style="font-size: 1.5rem; font-weight: bold; color: white;">
+  <!-- Navbar -->
+  <nav>
+      <div style="font-size: 1.5rem; font-weight: bold; color: white;">
         SafeDrives 🚗
-    </div>
-
-    <!-- Navigation Links -->
-    <ul style="
-        display: flex;
-        list-style: none;
-        gap: 20px;
-        margin: 0;
-        padding: 0;">
-        <li><a href="#home" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Home</a></li>
-        <li><a href="#about" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">About</a></li>
-        <li><a href="#usecases" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Why SafeDrives</a></li>
-        <li><a href="#team" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Team</a></li>
-    </ul>
-
-    <!-- Mobile Menu Button -->
-    <button id="mobile-menu" style="
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        display: none;
-        cursor: pointer;"></button>
-</nav>
+      </div>
+      <ul style="display: flex; list-style: none; gap: 20px; margin: 0; padding: 0;">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#usecases">Why SafeDrives</a></li>
+          <li><a href="#team">Team</a></li>
+      </ul>
+      <button id="mobile-menu" style="display: none;"></button>
+  </nav>
     
-
   <h1>Welcome to Driver De-Stress</h1>
   
-  <!-- Button to acknowledge pulling over -->
+  <!-- Button to indicate the driver has pulled over -->
   <button id="pullOverBtn">I have pulled over</button>
 
-  <!-- Hidden section that appears after clicking the button -->
+  <!-- Stress options section -->
   <div id="stressSection">
     <h2>Take a Moment to Relax</h2>
-    <p>Great job pulling over! Here are a few quick tips to reduce stress:</p>
-    <ul>
-      <li>Close your eyes and take three slow, deep breaths.</li>
-      <li>Roll your shoulders backward and forward a few times to loosen tension.</li>
-      <li>Listen to a calm audio track or simple nature sounds if it helps.</li>
-    </ul>
-    <p>Stay safe and remember: a brief break can go a long way to keep you relaxed on the road.</p>
+    <p>Great job pulling over! What would you like to do? (Music, Breathe, or Meditate?)</p>
+    <button id="optionMusic">Music</button>
+    <button id="optionBreathe">Breathe</button>
+    <button id="optionMeditate">Meditate</button>
   </div>
 
-  <script>
-    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478";  // Not recommended to expose
-    const voiceId = "21m00Tcm4TlvDq8ikWAM";   // e.g., "21m00Tcm4TlvDq8ikWAM"
+  <!-- Guided Breathing Section -->
+  <div id="breathingSection">
+    <h2>Guided Breathing Session</h2>
+    <div id="breathingCircleContainer">
+      <div id="breathingCircle"></div>
+    </div>
+    <p id="breathingInstructions">Press "Start" to begin.</p>
+    <button id="startBreathingBtn">Start Breathing</button>
+    <button id="stopBreathingBtn" style="display:none;">Stop</button>
+  </div>
 
-    // Speaks the provided text using ElevenLabs
+  <!-- Audio element for beep/chime (ensure you have a beep file at assets/audio/beep.mp3) -->
+  <audio id="beepSound" src="assets/audio/beep.mp3" preload="auto"></audio>
+  
+  <script>
+    // ElevenLabs TTS function (for optional spoken instructions)
+    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478";  // Not recommended to expose in production
+    const voiceId = "21m00Tcm4TlvDq8ikWAM"; 
+
     async function speakText(text) {
-    if (!text) {
+      if (!text) {
         console.log("No text provided to speak.");
         return;
-    }
-
-    try {
+      }
+      try {
         const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-        method: "POST",
-        headers: {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
             "xi-api-key": apiKey
-        },
-        body: JSON.stringify({
+          },
+          body: JSON.stringify({
             text: text,
             voice_settings: {
-            stability: 0.5,
-            similarity_boost: 0.5
+              stability: 0.5,
+              similarity_boost: 0.5
             }
-        })
+          })
         });
-
         if (!response.ok) {
-        throw new Error(`TTS request failed with status ${response.status}`);
+          throw new Error(`TTS request failed with status ${response.status}`);
         }
-
-        // Convert response to audio data, create a Blob, and then an object URL
         const audioArrayBuffer = await response.arrayBuffer();
         const audioBlob = new Blob([audioArrayBuffer], { type: "audio/mpeg" });
         const audioUrl = URL.createObjectURL(audioBlob);
-
-        // Play the audio and wait for it to finish
         return new Promise((resolve) => {
-        const audio = new Audio(audioUrl);
-        audio.onended = resolve;  // Ensure we resolve only after speech finishes
-        audio.onerror = (err) => {
+          const audio = new Audio(audioUrl);
+          audio.onended = resolve;
+          audio.onerror = (err) => {
             console.error("Error playing audio:", err);
-            resolve(); // Resolve to avoid blocking execution
-        };
-        audio.play();
+            resolve();
+          };
+          audio.play();
         });
-
-    } catch (error) {
+      } catch (error) {
         console.error("Error generating/playing TTS:", error);
+      }
     }
+
+    // Simple function to play a short beep sound
+    function playBeep() {
+      const beep = document.getElementById('beepSound');
+      if (beep) {
+        beep.currentTime = 0;
+        beep.play();
+      }
     }
 
-    function startListening() {
-        return new Promise((resolve, reject) => {
-            try {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
+    // When "I have pulled over" is clicked, show the stress options.
+    document.getElementById('pullOverBtn').addEventListener('click', function() {
+      document.getElementById('stressSection').style.display = 'block';
+    });
 
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = "en-US";
+    // Option buttons for manual selection.
+    document.getElementById('optionMusic').addEventListener('click', function() {
+      processChoice("music");
+    });
+    document.getElementById('optionBreathe').addEventListener('click', function() {
+      processChoice("breathe");
+    });
+    document.getElementById('optionMeditate').addEventListener('click', function() {
+      processChoice("meditate");
+    });
 
-                console.log("Listening for speech...");
+    // Also process spoken response after pullOverBtn is clicked.
+    document.getElementById('pullOverBtn').addEventListener('click', async function() {
+      await speakText("Music, Breathe, or Meditate?");
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      const userResponse = await getSpeechInput();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      processChoice(userResponse);
+    });
 
-                recognition.onresult = (event) => {
-                    const spokenText = event.results[0][0].transcript;
-                    console.log("User said:", spokenText);
-                    resolve(spokenText);  
-                };
+    // Process the user's choice.
+    async function processChoice(choice) {
+      const normalized = choice.toLowerCase();
+      // Remove previous dynamic sections if any.
+      if(document.getElementById("musicSection")) { document.getElementById("musicSection").remove(); }
+      if(document.getElementById("meditationSection")) { document.getElementById("meditationSection").remove(); }
+      document.getElementById('stressSection').style.display = 'none';
 
-                recognition.onerror = (event) => {
-                    console.error("Speech recognition error:", event.error);
-                    resolve("Error in speech recognition");  
-                };
-
-                recognition.onspeechend = () => {
-                    console.log("Speech ended, stopping recognition.");
-                    recognition.stop();
-                };
-
-                recognition.start();
-            } catch (err) {
-                console.error("Error initializing speech recognition:", err);
-                resolve("Speech recognition failed.");
-            }
+      if(normalized.includes("music")) {
+        // Music option: Insert a music player section.
+        const musicSection = document.createElement("div");
+        musicSection.id = "musicSection";
+        musicSection.style.background = "rgba(255,255,255,0.2)";
+        musicSection.style.padding = "20px";
+        musicSection.style.borderRadius = "15px";
+        musicSection.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+        musicSection.style.backdropFilter = "blur(10px)";
+        musicSection.style.maxWidth = "500px";
+        musicSection.style.marginTop = "20px";
+        musicSection.innerHTML = `
+          <h2>Relax with Calming Music</h2>
+          <audio controls autoplay>
+            <source src="assets/audio/calm_music.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        `;
+        document.body.appendChild(musicSection);
+        await speakText("Playing calming music for you.");
+      } else if(normalized.includes("breathe")) {
+        // Breathe option: Show the guided breathing section.
+        document.getElementById('breathingSection').style.display = 'block';
+        await speakText("Let's begin a guided breathing session. Follow the on-screen instructions.");
+      } else if(normalized.includes("meditate")) {
+        // Meditate option: Create a guided meditation section.
+        const meditationSection = document.createElement("div");
+        meditationSection.id = "meditationSection";
+        meditationSection.style.background = "rgba(255,255,255,0.2)";
+        meditationSection.style.padding = "20px";
+        meditationSection.style.borderRadius = "15px";
+        meditationSection.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+        meditationSection.style.backdropFilter = "blur(10px)";
+        meditationSection.style.maxWidth = "500px";
+        meditationSection.style.marginTop = "20px";
+        meditationSection.innerHTML = `
+          <h2>Guided Meditation Session</h2>
+          <p>Close your eyes, relax, and imagine a peaceful place.</p>
+          <button id="startMeditationBtn">Start Meditation</button>
+          <button id="stopMeditationBtn" style="display:none;">Stop Meditation</button>
+        `;
+        document.body.appendChild(meditationSection);
+        document.getElementById('startMeditationBtn').addEventListener('click', async function() {
+          this.style.display = 'none';
+          document.getElementById('stopMeditationBtn').style.display = 'inline-block';
+          await speakText("Starting a guided meditation. Relax and clear your mind.");
+          // Additional meditation functionality can be added here.
         });
+        document.getElementById('stopMeditationBtn').addEventListener('click', async function() {
+          this.style.display = 'none';
+          document.getElementById('startMeditationBtn').style.display = 'inline-block';
+          await speakText("Meditation session ended. I hope you feel more relaxed.");
+        });
+        await speakText("Let's begin a guided meditation session.");
+      } else {
+        // Unrecognized response: prompt user again.
+        await speakText("I'm sorry, I didn't understand that. Please try again by saying Music, Breathe, or Meditate.");
+        document.getElementById('stressSection').style.display = 'block';
+      }
+    }
+
+    // --- Guided Breathing Section Implementation using transform: scale() ---
+    let breathingPhase = 0;  // 0: Inhale, 1: Hold, 2: Exhale
+    const inhaleDuration = 4000; // 4 seconds
+    const holdDuration = 2000;   // 2 seconds
+    const exhaleDuration = 6000; // 6 seconds
+    let phaseTimeout;
+
+    const breathingCircle = document.getElementById('breathingCircle');
+    const breathingInstructions = document.getElementById('breathingInstructions');
+    const startBreathingBtn = document.getElementById('startBreathingBtn');
+    const stopBreathingBtn = document.getElementById('stopBreathingBtn');
+
+    function startBreathingCycle() {
+      breathingPhase = 0;
+      runBreathingPhase();
+    }
+
+    function runBreathingPhase() {
+      if(breathingPhase === 0) {
+        // Inhale: scale from 1 to 3 (using transform: translate + scale)
+        breathingInstructions.textContent = "Inhale for 4 seconds...";
+        playBeep();
+        breathingCircle.style.transition = `transform ${inhaleDuration}ms ease`;
+        breathingCircle.style.transform = "translate(-50%, -50%) scale(3)";
+        phaseTimeout = setTimeout(() => {
+          breathingPhase = 1;
+          runBreathingPhase();
+        }, inhaleDuration);
+      } else if(breathingPhase === 1) {
+        // Hold
+        breathingInstructions.textContent = "Hold for 2 seconds...";
+        playBeep();
+        phaseTimeout = setTimeout(() => {
+          breathingPhase = 2;
+          runBreathingPhase();
+        }, holdDuration);
+      } else if(breathingPhase === 2) {
+        // Exhale: scale back to 1
+        breathingInstructions.textContent = "Exhale for 6 seconds...";
+        playBeep();
+        breathingCircle.style.transition = `transform ${exhaleDuration}ms ease`;
+        breathingCircle.style.transform = "translate(-50%, -50%) scale(1)";
+        phaseTimeout = setTimeout(() => {
+          // Restart the cycle
+          breathingPhase = 0;
+          runBreathingPhase();
+        }, exhaleDuration);
+      }
+    }
+
+    function stopBreathingCycle() {
+      clearTimeout(phaseTimeout);
+      breathingCircle.style.transition = "";
+      breathingCircle.style.transform = "translate(-50%, -50%) scale(1)";
+      breathingInstructions.textContent = "Breathing session stopped.";
+    }
+
+    startBreathingBtn.addEventListener('click', function() {
+      startBreathingBtn.style.display = 'none';
+      stopBreathingBtn.style.display = 'inline-block';
+      startBreathingCycle();
+    });
+
+    stopBreathingBtn.addEventListener('click', function() {
+      stopBreathingCycle();
+      startBreathingBtn.style.display = 'inline-block';
+      stopBreathingBtn.style.display = 'none';
+      speakText("Guided breathing session ended.");
+    });
+
+    // --- Speech Recognition Functions ---
+    function startListening() {
+      return new Promise((resolve, reject) => {
+        try {
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          const recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = "en-US";
+          console.log("Listening for speech...");
+          recognition.onresult = (event) => {
+            const spokenText = event.results[0][0].transcript;
+            console.log("User said:", spokenText);
+            resolve(spokenText);
+          };
+          recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            resolve("Error in speech recognition");
+          };
+          recognition.onspeechend = () => {
+            console.log("Speech ended, stopping recognition.");
+            recognition.stop();
+          };
+          recognition.start();
+        } catch (err) {
+          console.error("Error initializing speech recognition:", err);
+          resolve("Speech recognition failed.");
+        }
+      });
     }
 
     async function getSpeechInput() {  
-        try {
-            console.log("Waiting for speech input...");
-            const myText = await startListening();  
-            console.log("Recognized speech:", myText);  
-            return myText;  
-        } catch (error) {
-            console.error("Error capturing speech:", error);
-            return "No response detected.";
-        }
+      try {
+        console.log("Waiting for speech input...");
+        const myText = await startListening();  
+        console.log("Recognized speech:", myText);  
+        return myText;  
+      } catch (error) {
+        console.error("Error capturing speech:", error);
+        return "No response detected.";
+      }
     }
-
-    document.getElementById('pullOverBtn').addEventListener('click', async function() {
-        console.log("Button clicked! Starting TTS...");
-        speakText("Music, Breathe, or Meditate?");
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        console.log("Waiting for user speech...");
-        const userResponse = await getSpeechInput();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        document.open();
-        document.write(`<h1>${userResponse}</h1>`);
-        document.close();
-
-       
-    
-    });
   </script>
-
 </body>
 </html>
