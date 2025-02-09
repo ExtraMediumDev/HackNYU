@@ -24,4 +24,6 @@ ROBOFLOW_API_KEY=pzAWQwuNyJwc4VPqIZwa
 python app.py
 ```
 
+If the API-keys have run out of credits, you can get free credits by making a new account at Roboflow and OpenAI
+
 Run the application by visiting the generated link in the terminal (most likely http://127.0.0.1:5000/)
