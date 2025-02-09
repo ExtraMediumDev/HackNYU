@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Add modal HTML to the page
+    // ------------------------------------------
+    // 1) DYNAMIC MODAL INSERTION (unchanged)
+    // ------------------------------------------
     const modalHTML = `
       <div class="modal-overlay" id="webcamModal">
         <div class="spotify-player">
@@ -22,26 +24,34 @@ document.addEventListener("DOMContentLoaded", () => {
     `
     document.body.insertAdjacentHTML("beforeend", modalHTML)
   
-    // Get modal elements
+    // ------------------------------------------
+    // 2) MODAL ELEMENTS & EVENT HANDLERS
+    // ------------------------------------------
     const modal = document.getElementById("webcamModal")
     const closeButton = modal.querySelector(".close-button")
     const startButton = document.getElementById("startButton")
   
-    // Add click handlers to all tiles
-    document.querySelectorAll(".tiles article a").forEach((tile) => {
+    let selectedStoryKey = "" // Will store the key for the chosen story (e.g. "The Great Gatsby")
+  
+    // Capture the user’s click on each tile
+    document.querySelectorAll(".tiles article").forEach((tile) => {
       tile.addEventListener("click", (e) => {
         e.preventDefault()
+        // The key must match one in storiesData (loaded via stories.js)
+        selectedStoryKey = tile.dataset.storyKey || ""
         modal.classList.add("active")
       })
     })
   
-    // Close modal handler
+    // Close Modal
     closeButton.addEventListener("click", () => {
       modal.classList.remove("active")
       stopMonitoring()
     })
   
-    // Webcam functionality remains the same
+    // ------------------------------------------
+    // 3) WEBCAM + PREDICTION LOGIC (unchanged)
+    // ------------------------------------------
     const video = document.getElementById("video")
     const canvas = document.getElementById("canvas")
     const resultImg = document.getElementById("result")
@@ -49,13 +59,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let intervalId = null
   
     function startMonitoring() {
-      // Attempt to get geolocation (optional)
+      // Attempt geolocation (optional)
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const latitude = position.coords.latitude
             const longitude = position.coords.longitude
-            console.log(latitude, longitude)
+            console.log("Latitude:", latitude, "Longitude:", longitude)
           },
           (error) => {
             console.error("Error getting location:", error.message)
@@ -109,10 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
               if (data.image) {
-                // Draw bounding box annotated image onto the canvas
+                // Show bounding box annotated image
                 const annotatedImg = new Image()
                 annotatedImg.onload = () => {
-                  // Hide video feed and show annotated canvas
                   video.style.display = "none"
                   canvas.style.display = "block"
   
@@ -123,15 +132,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 annotatedImg.src = "data:image/jpeg;base64," + data.image
               }
   
-              // Check for any alert flags
+              // Check alerts
               if (data.alerts) {
                 let alertsHTML = ""
                 if (data.alerts.sleep) {
-                  alertsHTML += '<p class="alert">Sleep Alert: Drowsiness detected for consecutive frames!</p>'
+                  alertsHTML += '<p class="alert">Sleep Alert: Drowsiness detected!</p>'
                   new Audio("./assets/audio/sleep_alert.mp3").play()
                 }
                 if (data.alerts.stress) {
-                  alertsHTML += '<p class="alert">Stress Alert: High stress detected for consecutive frames!</p>'
+                  alertsHTML += '<p class="alert">Stress Alert: High stress detected!</p>'
                 }
                 alertsDiv.innerHTML = alertsHTML
               }
@@ -143,9 +152,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // ------------------------------------------
-    // 1) TTS FUNCTION (ElevenLabs)
+    // 4) TEXT-TO-SPEECH (ElevenLabs)
     // ------------------------------------------
-    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478"
+    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478" // Replace with your own or hide on server
     const voiceId = "21m00Tcm4TlvDq8ikWAM"
   
     async function speakText(text) {
@@ -192,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // ------------------------------------------
-    // 2) FETCH QUESTIONS FROM YOUR FLASK ENDPOINT
+    // 5) QUESTION GENERATION + SCORING
     // ------------------------------------------
     async function fetchQuestions(text) {
       try {
@@ -216,9 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   
-    // ------------------------------------------
-    // 3) FETCH SEMANTIC SCORE
-    // ------------------------------------------
     async function fetchSemanticScore(correctAnswer, userAnswer) {
       try {
         const response = await fetch("/api/mysemantic-score", {
@@ -237,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
   
         const data = await response.json()
-        return data.match // Returns true or false
+        return data.match // true or false
       } catch (err) {
         console.error("Error fetching semantic score:", err)
         return false
@@ -245,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // ------------------------------------------
-    // 4) SPEECH RECOGNITION HELPERS
+    // 6) SPEECH RECOGNITION
     // ------------------------------------------
     function startListening() {
       return new Promise((resolve, reject) => {
@@ -287,44 +293,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // ------------------------------------------
-    // 5) MAIN STORY FLOW
+    // 7) MAIN STORY FLOW
     // ------------------------------------------
-    async function runStoryFlow() {
+    async function runStoryFlow(storyKey) {
+      if (!storyKey) {
+        console.error("No story key provided, or tile was missing data-story-key.")
+        return
+      }
+  
+      // 7a) Retrieve the text from storiesData
+      const extractedText = storiesData[storyKey] || ""
+      if (!extractedText) {
+        console.error(`No story text found for key: ${storyKey}`)
+        return
+      }
+  
       try {
-        // Hard-coded story; no file upload or PDF reading
-        const extractedText = `
-          Once upon a time, there was a curious developer named Alex.
-          Alex loved to experiment with JavaScript and build interesting web projects.
-          One day, Alex discovered a powerful text-to-speech API.
-          With it, Alex could bring stories to life and interact with users in a whole new way.
-          The end.
-        `
+        // Segment and read the text
         const words = extractedText.split(" ")
-        let myStr = ""
+        let currentSegment = ""
         const totalWords = words.length
+  
+        // We'll break into 5 approximate segments, or whatever logic you prefer
         const segmentSize = totalWords / 5
         let nextSplit = segmentSize
   
         for (let idx = 0; idx < words.length; idx++) {
-          myStr += " " + words[idx]
+          currentSegment += " " + words[idx]
   
+          // If we've crossed a segment boundary and found a period, speak that chunk
           if (idx + 1 >= Math.floor(nextSplit) && words[idx].includes(".")) {
-            console.log(`[Segment] ${myStr.trim()}`)
-            await speakText(myStr.trim())
+            console.log(`[Segment] ${currentSegment.trim()}`)
+            await speakText(currentSegment.trim())
   
-            // Get question(s) from server
-            const questionAndAnswer = await fetchQuestions(myStr.trim())
+            // Q&A flow
+            const questionAndAnswer = await fetchQuestions(currentSegment.trim())
             let questionPart, answerPart
   
-            // If the question string includes "Answer:", split them out
-            // (Otherwise, handle question as-is)
+            // If the returned question is a string containing "Answer:", split it
             if (typeof questionAndAnswer === "string" && questionAndAnswer.includes("Answer:")) {
               const parts = questionAndAnswer.split("Answer:")
               questionPart = parts[0].trim()
               answerPart = parts[1].trim()
             } else {
-              // If the endpoint returns an array or something else,
-              // adapt here as you wish. For simplicity:
+              // If we get an array or different structure, handle accordingly
               questionPart = questionAndAnswer
               answerPart = "Unknown"
             }
@@ -346,7 +358,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(`[Feedback] ${feedback}`)
             await speakText(feedback)
   
-            myStr = ""
+            // Reset for next chunk
+            currentSegment = ""
             nextSplit += segmentSize
           }
         }
@@ -356,11 +369,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // ------------------------------------------
-    // HOOK INTO THE "BEGIN STORY" BUTTON
+    // 8) BEGIN STORY BUTTON
     // ------------------------------------------
     startButton.addEventListener("click", async () => {
-      startMonitoring()  // existing webcam logic
-      await runStoryFlow() // story reading + Q&A in the background
+      startMonitoring() // start webcam logic
+  
+      // run the story flow using whichever story was selected
+      await runStoryFlow(selectedStoryKey)
     })
   })
   
