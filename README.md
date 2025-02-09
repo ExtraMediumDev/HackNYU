@@ -26,4 +26,6 @@ python app.py
 
 If the API-keys have run out of credits, you can get free credits by making a new account at Roboflow and OpenAI
 
+If the API-key in Frontend has run out, generate a new one at ElevenLabs by making a new account
+
 Run the application by visiting the generated link in the terminal (most likely http://127.0.0.1:5000/)
