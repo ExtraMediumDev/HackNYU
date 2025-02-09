@@ -53,7 +53,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(180, 167, 167, 0.5);
+      background: rgba(98, 87, 87, 0.5);
       z-index: 1;
     }
     
@@ -177,7 +177,7 @@
     }
     
     #usecases th {
-      background-color: #ddd;
+
       font-weight: bold;
     }
     
@@ -630,6 +630,7 @@
   align-items: center;
   padding: 6px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  color: white;
   border-radius: 6px;
   border: none;
   color: #fff;
@@ -659,13 +660,22 @@
 	
   
 <header id="home">
-    <h1>Welcome to SafeDrives</h1>
-    <p>
-      We create awesome products that revolutionize the way you do business. Scroll down to learn more about who we are, our product use cases, and meet our incredible team!
+    <h1 style="color: white; font-size: 80px; font-weight: bold; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;"> Welcome to Safe Drives!
+	</h1>
+	<p style="color: white; font-size: 15px; font-weight: bold; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">
+      SafeDrives is a platform to help people with late night drives.
     </p>
     <div class="hero-buttons">
-      <button class="button-10" onclick="smoothScrollTo('about')">Learn More</button>
-      <button class="button-10" onclick="nextSectionShift()">Statistics</button>
+		<button class="button-10" onclick="smoothScrollTo('about')" 
+		style="border: 2px solid white; color: white; background: transparent;">
+		Learn More
+	</button>
+	
+	<button class="button-10" onclick="nextSectionShift('about')" 
+		style="border: 2px solid white; color: white; background: transparent;">
+		Statistics
+	</button>
+
     </div>
 </header>
 
@@ -789,7 +799,9 @@
   </div>
   
   <!-- Back to Top Button -->
-  <button id="backToTopBtn" title="Go to top">↑ Top</button>
+  <button id="backToTopBtn" title="Go to top" >↑ Top</button>
+
+
 
   <!-- Inline JavaScript -->
   <script>
