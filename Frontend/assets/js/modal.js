@@ -9,13 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
                       <canvas id="canvas" style="display: none;"></canvas>
                       <img id="result" alt="Prediction Result" />
                   </div>
+
                   <div class="metrics-section">
-                      <div class="metrics-title">Stress Level</div>
-                      <div id="stressPrediction" class="metrics-value">Not measured</div>
-                      <div class="metrics-title">Drowsiness Level</div>
-                      <div id="drowsinessPrediction" class="metrics-value">Not measured</div>
                       <div id="alerts"></div>
                   </div>
+                  
                   <div class="player-controls">
                       <button id="startButton" class="begin-story-btn">Begin Story</button>
                   </div>
@@ -120,25 +118,38 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.image) {
-                    resultImg.src = "data:image/jpeg;base64," + data.image;
+                    // Instead of setting an <img> element’s src, draw the image onto the canvas
+                    const annotatedImg = new Image();
+                    annotatedImg.onload = () => {
+                        // Hide the live video feed and show the canvas
+                        video.style.display = "none";
+                        canvas.style.display = "block";
+    
+                        const ctx = canvas.getContext("2d");
+                        // Optional: Clear previous content
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        // Draw the annotated image (which contains the bounding boxes)
+                        ctx.drawImage(annotatedImg, 0, 0, canvas.width, canvas.height);
+                    };
+                    annotatedImg.src = "data:image/jpeg;base64," + data.image;
                 }
     
-                if (data.stress_predictions) {
-                    const predictions = data.stress_predictions;
-                    let predictionHTML = '';
-                    predictions.forEach(pred => {
-                      predictionHTML += `<p>${pred.class || 'Unknown'}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
-                    });
-                    stressPredictionDiv.innerHTML = predictionHTML;  
-                }
+                // if (data.stress_predictions) {
+                //     const predictions = data.stress_predictions;
+                //     let predictionHTML = '';
+                //     predictions.forEach(pred => {
+                //       predictionHTML += `<p>${pred.class || 'Unknown'}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
+                //     });
+                //     stressPredictionDiv.innerHTML = predictionHTML;  
+                // }
                 
-                if (data.drowsiness_predictions) {
-                    let drowsinessHTML = '';
-                    data.drowsiness_predictions.forEach(pred => {
-                      drowsinessHTML += `<p>${pred.class || 'Unknown'}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
-                    });
-                    drowsinessPredictionDiv.innerHTML = drowsinessHTML;
-                }
+                // if (data.drowsiness_predictions) {
+                //     let drowsinessHTML = '';
+                //     data.drowsiness_predictions.forEach(pred => {
+                //       drowsinessHTML += `<p>${pred.class || 'Unknown'}: ${(pred.confidence * 100).toFixed(2)}%</p>`;
+                //     });
+                //     drowsinessPredictionDiv.innerHTML = drowsinessHTML;
+                // }
 
                   
                   // Check for alert flags in the response and display messages if needed.
