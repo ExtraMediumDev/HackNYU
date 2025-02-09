@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Get User Location & Traffic Info</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      button { padding: 10px 20px; margin-right: 10px; font-size: 1rem; }
+      #output { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Click a button to get your location or traffic info:</h2>
+    <button onclick="getLocation()">Get Location</button>
+    <button onclick="callTrafficAPI()">Get Traffic</button>
+    <p id="output"></p>
+
+    <script>
+        function callTrafficAPI() {
+            const lat = 40.756253;
+            const lon = -73.994936;
+            fetch(`/traffic?lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("output").innerHTML += `
+                        <br>Traffic status:${data.status}`;
+                })
+                .catch(error => {
+                    console.error("Error fetching traffic data:", error);
+                    document.getElementById("output").innerHTML += `<br>Error: ${error}`;
+                });
+        }
+    </script>
+</body>
+</html>
