@@ -214,6 +214,8 @@
     // When "I have pulled over" is clicked, show the stress options.
     document.getElementById('pullOverBtn').addEventListener('click', function() {
       document.getElementById('stressSection').style.display = 'block';
+
+      
     });
 
     // Option buttons for manual selection.
@@ -229,23 +231,27 @@
 
     // Also process spoken response after pullOverBtn is clicked.
     document.getElementById('pullOverBtn').addEventListener('click', async function() {
-      await speakText("Music, Breathe, or Meditate?");
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      const userResponse = await getSpeechInput();
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      processChoice(userResponse);
+    //   await speakText("Music, Breathe, or Meditate?");
+    //   await new Promise(resolve => setTimeout(resolve, 3000));
+    // //   const userResponse = await getSpeechInput();
+    //   await new Promise(resolve => setTimeout(resolve, 1000));
+    //   processChoice(userResponse);
     });
 
     // Process the user's choice.
     async function processChoice(choice) {
-      const normalized = choice.toLowerCase();
-      // Remove previous dynamic sections if any.
-      if(document.getElementById("musicSection")) { document.getElementById("musicSection").remove(); }
-      if(document.getElementById("meditationSection")) { document.getElementById("meditationSection").remove(); }
-      document.getElementById('stressSection').style.display = 'none';
+    const normalized = choice.toLowerCase();
 
-      if(normalized.includes("music")) {
-        // Music option: Insert a music player section.
+    // Hide all sections first
+    document.getElementById('stressSection').style.display = 'none';
+    document.getElementById('breathingSection').style.display = 'none';
+
+    // Remove dynamically created sections
+    if (document.getElementById("musicSection")) document.getElementById("musicSection").remove();
+    if (document.getElementById("meditationSection")) document.getElementById("meditationSection").remove();
+
+    if (normalized.includes("music")) {
+        // Music option: Create a music player
         const musicSection = document.createElement("div");
         musicSection.id = "musicSection";
         musicSection.style.background = "rgba(255,255,255,0.2)";
@@ -261,15 +267,36 @@
             <source src="assets/audio/calm_music.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
+          <button id="backBtnMusic">Back</button>
         `;
         document.body.appendChild(musicSection);
+
+        // Add event listener to "Back" button
+        document.getElementById("backBtnMusic").addEventListener("click", function () {
+            musicSection.remove(); // Remove the music section
+            document.getElementById("stressSection").style.display = "block"; // Show options again
+        });
+
         await speakText("Playing calming music for you.");
-      } else if(normalized.includes("breathe")) {
-        // Breathe option: Show the guided breathing section.
+    } else if (normalized.includes("breathe")) {
+        // Show the guided breathing section
         document.getElementById('breathingSection').style.display = 'block';
+
+        // Add "Back" button
+        let backBtn = document.createElement("button");
+        backBtn.textContent = "Back";
+        backBtn.id = "backBtnBreathe";
+        document.getElementById("breathingSection").appendChild(backBtn);
+
+        // Back button event listener
+        backBtn.addEventListener("click", function () {
+            document.getElementById('breathingSection').style.display = 'none';
+            document.getElementById('stressSection').style.display = 'block';
+        });
+
         await speakText("Let's begin a guided breathing session. Follow the on-screen instructions.");
-      } else if(normalized.includes("meditate")) {
-        // Meditate option: Create a guided meditation section.
+    } else if (normalized.includes("meditate")) {
+        // Meditation section
         const meditationSection = document.createElement("div");
         meditationSection.id = "meditationSection";
         meditationSection.style.background = "rgba(255,255,255,0.2)";
@@ -284,32 +311,40 @@
           <p>Close your eyes, relax, and imagine a peaceful place.</p>
           <button id="startMeditationBtn">Start Meditation</button>
           <button id="stopMeditationBtn" style="display:none;">Stop Meditation</button>
+          <button id="backBtnMeditate">Back</button>
         `;
-        document.body.appendChild(meditationSection);
+        document.body.appendChild(meditationSection)
+        let medi = null
         document.getElementById('startMeditationBtn').addEventListener('click', async function() {
+            medi = new Audio("images/2minmeditation.mp3");
+            medi.loop = true; // Optional: Loops the music
+            medi.play();
           this.style.display = 'none';
-          document.getElementById('stopMeditationBtn').style.display = 'inline-block';
+        })
+        
+        document.getElementById('stopMeditationBtn').style.display = 'inline-block';
           await speakText("Starting a guided meditation. Relax and clear your mind.");
           // Additional meditation functionality can be added here.
-        });
+        };
+
+        
         document.getElementById('stopMeditationBtn').addEventListener('click', async function() {
-          this.style.display = 'none';
-          document.getElementById('startMeditationBtn').style.display = 'inline-block';
-          await speakText("Meditation session ended. I hope you feel more relaxed.");
-        });
+            if (medi) {
+                medi.pause(); // Pause the music
+                medi.currentTime = 0; // Reset to the beginning
+                medi = null; // Clear reference to prevent memory leaks
+        }
         await speakText("Let's begin a guided meditation session.");
-      } else {
-        // Unrecognized response: prompt user again.
-        await speakText("I'm sorry, I didn't understand that. Please try again by saying Music, Breathe, or Meditate.");
+      
         document.getElementById('stressSection').style.display = 'block';
-      }
+      })
     }
 
     // --- Guided Breathing Section Implementation using transform: scale() ---
     let breathingPhase = 0;  // 0: Inhale, 1: Hold, 2: Exhale
     const inhaleDuration = 4000; // 4 seconds
     const holdDuration = 2000;   // 2 seconds
-    const exhaleDuration = 6000; // 6 seconds
+    const exhaleDuration = 7000; // 6 seconds
     let phaseTimeout;
 
     const breathingCircle = document.getElementById('breathingCircle');
@@ -362,18 +397,33 @@
       breathingInstructions.textContent = "Breathing session stopped.";
     }
 
+    let audio = null; 
     startBreathingBtn.addEventListener('click', function() {
       startBreathingBtn.style.display = 'none';
       stopBreathingBtn.style.display = 'inline-block';
+
+        audio = new Audio("images/2minbreathing.mp3");
+        audio.loop = true; // Optional: Loops the music
+        audio.play();
+
       startBreathingCycle();
     });
 
     stopBreathingBtn.addEventListener('click', function() {
+        if (audio) {
+        audio.pause(); // Pause the music
+        audio.currentTime = 0; // Reset to the beginning
+        audio = null; // Clear reference to prevent memory leaks
+    }
       stopBreathingCycle();
       startBreathingBtn.style.display = 'inline-block';
       stopBreathingBtn.style.display = 'none';
+      
+
       speakText("Guided breathing session ended.");
     });
+
+
 
     // --- Speech Recognition Functions ---
     function startListening() {
