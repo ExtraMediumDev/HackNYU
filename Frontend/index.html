@@ -12,6 +12,33 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/modal.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+		<style>
+			/* 1) Remove the big Phantom padding on #header */
+			#header {
+			  padding: 0 !important;
+			  margin: 0 !important;
+			  background: none !important;
+			}
+			/* 2) Make sure the header image fills width with no white gaps */
+			.header-image img {
+			  display: block;
+			  width: 100%;
+			  height: auto;
+			}
+		
+			/* 3) Give the main area a slight top offset so it doesn’t appear behind the fixed nav */
+			#main {
+			  margin-top: 155px; /* Adjust to match your nav's height */
+			}
+		
+			/* 4) Ensure .inner keeps Phantom’s centering but no extra top padding */
+			#header .inner {
+			  padding: 0 !important;
+			  margin: 0 auto !important; /* keeps it centered */
+			  max-width: 60em;           /* or whatever width you want */
+			}
+		</style>
 	</head>
 	<body class="is-preload">
 		<!-- Wrapper -->
