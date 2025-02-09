@@ -17,6 +17,10 @@ Clone the repository to your local machine by running:
 git clone https://github.com/ExtraMediumDev/HackNYU.git
 cd HackNYU/Backend
 pip install -r requirements.txt
+cat <<EOF > .env
+OPENAI_KEY=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
+ROBOFLOW_API_KEY=pzAWQwuNyJwc4VPqIZwa
+EOF
 python app.py
 ```
 
