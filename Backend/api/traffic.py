@@ -12,7 +12,7 @@ traffic_bp = Blueprint('traffic_bp', __name__)
 
 def get_traffic_from_coordinates(lat, lon, api_key):
     # Create a small bounding box around the coordinate (adjust as needed)
-    bbox = f"{lon-0.0001},{lat-0.0001},{lon+0.0001},{lat+0.0001}"
+    bbox = f"{lon-0.0025},{lat-0.0025},{lon+0.0025},{lat+0.0025}"
     url = "https://data.traffic.hereapi.com/v7/flow"  # Verify this URL with HERE documentation
     params = {
         "locationReferencing": "shape",
@@ -33,7 +33,7 @@ def get_traffic_real(traffic_data):
     for result in traffic_data.get("results", []):
         current_flow = result.get("currentFlow", {})
         jam_factor = current_flow.get("jamFactor")
-        if jam_factor is not None and jam_factor > 8.0:
+        if jam_factor is not None and jam_factor > 6.0:
             return "TRAFFIC"
     return "NO TRAFFIC"
 

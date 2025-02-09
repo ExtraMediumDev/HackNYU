@@ -55,8 +55,8 @@
       // Call the Flask API endpoint.
       function callTrafficAPI() {
           // Use current location if available, else fallback coordinates.
-          const lat = currentLat || 40.756253;
-          const lon = currentLon || -73.994936;
+          const lat = 13.043133;
+          const lon = 77.590723;
           
           // IMPORTANT: Note the endpoint is now '/api/traffic' rather than '/traffic'
           fetch(`/api/traffic?lat=${lat}&lon=${lon}`)
