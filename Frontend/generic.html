@@ -114,7 +114,7 @@
     
     /* Section Titles */
     section {
-      padding: 80px 0;
+      padding: 0px 0;
       width: 100vw;
       max-width: 100vw;
       margin: 0;
@@ -196,14 +196,6 @@
       max-width: 1000px;
       margin: 0 auto;
     }
-	.team-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Center the team members horizontally */
-    gap: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
 
 .card {
     background-color: #fff;
@@ -286,11 +278,12 @@
     }
     
     
-	#usecases, .outer-container {
-    background: linear-gradient(to bottom, #1e1e1e, #444);
-    color: white; /* Ensure text is visible */
-    width: 100%; /* Ensure it covers full width */
-    padding: 80px 20px;
+	#usecases, 
+  .outer-container {
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 40px 0 !important;
+  background: linear-gradient(to bottom, #1e1e1e, #444);
 }
 * {
   font-family: Nunito, sans-serif;
@@ -447,6 +440,8 @@
   flex-wrap: wrap; /* Allows wrapping on smaller screens */
   max-width: 1000px; /* Ensures it doesn’t stretch too wide */
 } 
+
+
 @media (max-width: 1024px) {
   .name {
     margin-top: 0px;
@@ -794,35 +789,37 @@
   </section>
   
   <!-- Meet The Team Section -->
-  <div class="responsive-container-block outer-container">
-    <div class="responsive-container-block inner-container">
-        <div class="responsive-cell-block wk-tab-12 wk-mobile-12 wk-desk-4 wk-ipadp-4 headings-container">
-			<p class="text-blk heading-text" style="text-align: center; width: 100%;">Meet The Team</p>
-           
-        </div>
-        <div class="responsive-cell-block wk-desk-8 wk-ipadp-8 wk-tab-12 wk-mobile-12 team-container">
-            <div class="card">
-                <img class="card-img" src="images/vishnucover.png" alt="Gustavo Workman">
-                <p class="text-blk name" style = "color:black">Vishnu Arvind</p>
-                <p class="text-blk position">Computer Science + Bioengineering, UIUC</p>
-            </div>
-            <div class="card">
-                <img class="card-img" src="images/briancover.png" alt="Gustavo Workman">
-                <p class="text-blk name" style = "color:black">Brian Li</p>
-                <p class="text-blk position">Computer Science, UIUC</p>
-            </div>
-            <div class="card">
-                <img class="card-img" src="images/SriramHeadshot.png" alt="Gustavo Workman">
-                <p class="text-blk name" style = "color:black">Sriram Natarajan</p>
-                <p class="text-blk position">Copmuter Science + Linguistics, UIUC</p>
-            </div>
-            <div class="card">
-                <img class="card-img" src="images/ericcover.JPG" alt="Gustavo Workman">
-                <p class="text-blk name" style = "color:black">Eric Wang</p>
-                <p class="text-blk position">Computer Science + Math, UIUC</p>
-            </div>
-        </div>
-    </div>
+  <section id="team">
+    <div class="responsive-container-block outer-container">
+      <div class="responsive-container-block inner-container">
+          <div class="responsive-cell-block wk-tab-12 wk-mobile-12 wk-desk-4 wk-ipadp-4 headings-container">
+        <p class="text-blk heading-text" style="text-align: center; width: 100%;">Meet The Team</p>
+            
+          </div>
+          <div class="responsive-cell-block wk-desk-8 wk-ipadp-8 wk-tab-12 wk-mobile-12 team-container">
+              <div class="card">
+                  <img class="card-img" src="images/vishnucover.png" alt="Gustavo Workman">
+                  <p class="text-blk name" style = "color:black">Vishnu Arvind</p>
+                  <p class="text-blk position">Computer Science + Bioengineering, UIUC</p>
+              </div>
+              <div class="card">
+                  <img class="card-img" src="images/briancover.png" alt="Gustavo Workman">
+                  <p class="text-blk name" style = "color:black">Brian Li</p>
+                  <p class="text-blk position">Computer Science, UIUC</p>
+              </div>
+              <div class="card">
+                  <img class="card-img" src="images/SriramHeadshot.png" alt="Gustavo Workman">
+                  <p class="text-blk name" style = "color:black">Sriram Natarajan</p>
+                  <p class="text-blk position">Copmuter Science + Linguistics, UIUC</p>
+              </div>
+              <div class="card">
+                  <img class="card-img" src="images/ericcover.JPG" alt="Gustavo Workman">
+                  <p class="text-blk name" style = "color:black">Eric Wang</p>
+                  <p class="text-blk position">Computer Science + Math, UIUC</p>
+              </div>
+          </div>
+      </div>
+    </section>
 </div>
 	</div>
   </div>
