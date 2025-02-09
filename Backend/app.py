@@ -1,5 +1,6 @@
 from flask import Flask, send_from_directory, request, render_template, redirect, url_for, jsonify
 from api.yolo import yolo_bp
+from api.traffic import traffic_bp
 from test import Audiobook
 import os
 from flask_cors import CORS
@@ -11,6 +12,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # YOLO prediction blueprint registered at the '/api' prefix, but we can def change this later
 app.register_blueprint(yolo_bp, url_prefix='/api')
+app.register_blueprint(traffic_bp, url_prefix='/api')
 
 @app.route('/')
 def index():

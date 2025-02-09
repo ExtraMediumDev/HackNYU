@@ -4,32 +4,83 @@
     <meta charset="UTF-8">
     <title>Get User Location & Traffic Info</title>
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; }
-      button { padding: 10px 20px; margin-right: 10px; font-size: 1rem; }
-      #output { margin-top: 20px; }
+      body { 
+          font-family: Arial, sans-serif; 
+          margin: 20px; 
+      }
+      button { 
+          padding: 10px 20px; 
+          margin-right: 10px; 
+          font-size: 1rem; 
+      }
+      #output { 
+          margin-top: 20px; 
+      }
     </style>
 </head>
 <body>
     <h2>Click a button to get your location or traffic info:</h2>
     <button onclick="getLocation()">Get Location</button>
-    <button onclick="callTrafficAPI()">Get Traffic</button>
+    <button onclick="callTrafficAPI()">Get Traffic Info</button>
     <p id="output"></p>
 
     <script>
-        function callTrafficAPI() {
-            const lat = 40.756253;
-            const lon = -73.994936;
-            fetch(`/traffic?lat=${lat}&lon=${lon}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("output").innerHTML += `
-                        <br>Traffic status:${data.status}`;
-                })
-                .catch(error => {
-                    console.error("Error fetching traffic data:", error);
-                    document.getElementById("output").innerHTML += `<br>Error: ${error}`;
-                });
-        }
+      // Global variables to store location
+      let currentLat = null;
+      let currentLon = null;
+
+      // Use the browser's geolocation API to get the user's location.
+      function getLocation() {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(success, error);
+          } else {
+              document.getElementById("output").innerHTML = "Geolocation is not supported by this browser.";
+          }
+      }
+
+      function success(position) {
+          currentLat = position.coords.latitude;
+          currentLon = position.coords.longitude;
+          document.getElementById("output").innerHTML = `
+              Your current location: <br>
+              Latitude: ${currentLat.toFixed(4)}<br>
+              Longitude: ${currentLon.toFixed(4)}
+          `;
+      }
+
+      function error(err) {
+          document.getElementById("output").innerHTML = "Error: " + err.message;
+      }
+
+      // Call the Flask API endpoint.
+      function callTrafficAPI() {
+          // Use current location if available, else fallback coordinates.
+          const lat = currentLat || 40.756253;
+          const lon = currentLon || -73.994936;
+          
+          // IMPORTANT: Note the endpoint is now '/api/traffic' rather than '/traffic'
+          fetch(`/api/traffic?lat=${lat}&lon=${lon}`)
+              .then(response => {
+                  // Check if the response is JSON; if not, log the text.
+                  return response.text().then(text => {
+                      try {
+                          return JSON.parse(text);
+                      } catch(e) {
+                          console.error("Response is not valid JSON:", text);
+                          throw new Error("Invalid JSON response");
+                      }
+                  });
+              })
+              .then(data => {
+                  document.getElementById("output").innerHTML += `
+                      <br><br>Traffic status: ${data.status}
+                  `;
+              })
+              .catch(error => {
+                  console.error("Error fetching traffic data:", error);
+                  document.getElementById("output").innerHTML += `<br>Error: ${error}`;
+              });
+      }
     </script>
 </body>
 </html>
