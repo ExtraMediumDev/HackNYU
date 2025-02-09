@@ -2,8 +2,10 @@ from flask import Flask, send_from_directory, request, render_template, redirect
 from api.yolo import yolo_bp
 from test import Audiobook
 import os
+from flask_cors import CORS
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='../Frontend', static_url_path='')
+CORS(app)
 UPLOAD_FOLDER = "/Users/sriramnatarajan/Documents/newHack/EvenMoreFunProject/Backend/PDFS"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
