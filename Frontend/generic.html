@@ -18,7 +18,7 @@
     
     body {
       background-color: #f4f4f4;
-      color: #333;
+      color: #ffffff;
     }
     
     html, body {
@@ -53,7 +53,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(180, 167, 167, 0.5);
       z-index: 1;
     }
     
@@ -665,7 +665,7 @@
     </p>
     <div class="hero-buttons">
       <button class="button-10" onclick="smoothScrollTo('about')">Learn More</button>
-      <button class="button-10" onclick="nextSectionShift()">Shift the Page!</button>
+      <button class="button-10" onclick="nextSectionShift()">Statistics</button>
     </div>
 </header>
 
@@ -683,9 +683,11 @@
     z-index: 1000;">
     
     <!-- Brand Logo -->
-    <div style="font-size: 1.5rem; font-weight: bold; color: white;">
-        SafeDrives 🚗
-    </div>
+    <a href="generic.html" style="text-decoration: none;">
+		<div style="font-size: 1.5rem; font-weight: bold; color: white;">
+			SafeDrives 🚗
+		</div>
+	</a>
 
     <!-- Navigation Links -->
     <ul style="
@@ -694,10 +696,11 @@
         gap: 20px;
         margin: 0;
         padding: 0;">
-        <li><a href="#home" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Home</a></li>
+        <li><a href="index.html" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Safe Drives</a></li>
         <li><a href="#about" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">About</a></li>
         <li><a href="#usecases" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Why SafeDrives</a></li>
         <li><a href="#team" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Team</a></li>
+        <li><a href="stress.html" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">De-stress</a></li>
     </ul>
 
     <!-- Mobile Menu Button -->
@@ -709,7 +712,7 @@
         display: none;
         cursor: pointer;">☰</button>
 </nav>
-  <div>
+  </body>
   <!-- Who Are We Section -->
   <section id="about">
     <h2>Who Are We</h2>
@@ -750,7 +753,7 @@
       </tbody>
     </table>
   </section>
-</div>
+  
   <!-- Meet The Team Section -->
   <div class="responsive-container-block outer-container">
     <div class="responsive-container-block inner-container">
