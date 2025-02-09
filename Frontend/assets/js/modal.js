@@ -145,8 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ------------------------------------------
     // 1) TTS FUNCTION (ElevenLabs)
     // ------------------------------------------
-    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478" // Use your own if needed
-    const voiceId = "21m00Tcm4TlvDq8ikWAM" // Example Voice ID
+    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478"
+    const voiceId = "21m00Tcm4TlvDq8ikWAM"
   
     async function speakText(text) {
       if (!text) {
