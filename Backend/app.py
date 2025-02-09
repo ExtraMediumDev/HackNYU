@@ -53,7 +53,10 @@ def mysemantic_score():
 
     return jsonify({"match": score_passed})
 
-
+@app.route('/stressed')
+def stressed():
+    # This will serve the 'stress.html' template
+    return render_template('stress.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
