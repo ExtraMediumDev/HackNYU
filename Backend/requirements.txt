@@ -55,7 +55,7 @@ packaging==24.2
 pillow==10.4.0
 propcache==0.2.1
 py-cpuinfo==9.0.0
-PyAudio==0.2.14
+#PyAudio==0.2.14
 pycryptodome==3.21.0
 pydantic==2.10.6
 pydantic_core==2.27.2
