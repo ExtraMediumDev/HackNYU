@@ -15,7 +15,7 @@ Clone the repository to your local machine by running:
 
 ```bash
 git clone https://github.com/ExtraMediumDev/HackNYU.git
-cd Backend
+cd HackNYU/Backend
 pip install -r requirements.txt
 python app.py
 ```
