@@ -14,7 +14,7 @@ This document will guide you through setting up and running the backend of the p
 Clone the repository to your local machine by running:
 
 ```bash
-git clone https://github.com/yourusername/yourrepository.git
+git clone https://github.com/ExtraMediumDev/HackNYU.git
 cd Backend
 pip install -r requirements.txt
 python app.py
