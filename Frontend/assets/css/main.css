@@ -3339,4 +3339,7 @@ input, select, textarea {
 		z-index: 2; /* Make sure it's above other elements */
 		margin-top: 170px; /* Adjust so it doesn’t overlap */
 	}
+	#stressSection {
+		display: none; /* Hide initially */
+	  }
 	

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver De-Stress</title>
+  <!-- Link to the external CSS -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <style>
+    /* Background Animation */
+    @keyframes gradientAnimation {
+        0% { background: linear-gradient(to bottom, #b3e5fc, #81d4fa); } /* Light Blue */
+        25% { background: linear-gradient(to bottom, #b2ebf2, #4dd0e1); } /* Aqua */
+        50% { background: linear-gradient(to bottom, #80deea, #26c6da); } /* Teal */
+        75% { background: linear-gradient(to bottom, #64b5f6, #42a5f5); } /* Soft Blue */
+        100% { background: linear-gradient(to bottom, #b3e5fc, #81d4fa); } /* Light Blue (Loop back) */
+    }
+
+    body {
+        animation: gradientAnimation 10s infinite alternate ease-in-out;
+        font-family: "Source Sans Pro", Helvetica, sans-serif;
+        text-align: center;
+        color: white;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: background 1s ease-in-out;
+    }
+
+    /* Style the stress relief section */
+    #stressSection {
+        display: none;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        max-width: 500px;
+    }
+
+    button {
+        background-color: rgba(255, 255, 255, 0.3);
+        border: none;
+        padding: 15px 20px;
+        font-size: 18px;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+    <nav style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(30, 30, 30, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 50px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;">
+    
+    <!-- Brand Logo -->
+    <div style="font-size: 1.5rem; font-weight: bold; color: white;">
+        SafeDrives 🚗
+    </div>
+
+    <!-- Navigation Links -->
+    <ul style="
+        display: flex;
+        list-style: none;
+        gap: 20px;
+        margin: 0;
+        padding: 0;">
+        <li><a href="#home" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Home</a></li>
+        <li><a href="#about" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">About</a></li>
+        <li><a href="#usecases" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Why SafeDrives</a></li>
+        <li><a href="#team" style="text-decoration: none; color: white; font-size: 1rem; padding: 10px 15px; transition: 0.3s;">Team</a></li>
+    </ul>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu" style="
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        display: none;
+        cursor: pointer;"></button>
+</nav>
+    
+
+  <h1>Welcome to Driver De-Stress</h1>
+  
+  <!-- Button to acknowledge pulling over -->
+  <button id="pullOverBtn">I have pulled over</button>
+
+  <!-- Hidden section that appears after clicking the button -->
+  <div id="stressSection">
+    <h2>Take a Moment to Relax</h2>
+    <p>Great job pulling over! Here are a few quick tips to reduce stress:</p>
+    <ul>
+      <li>Close your eyes and take three slow, deep breaths.</li>
+      <li>Roll your shoulders backward and forward a few times to loosen tension.</li>
+      <li>Listen to a calm audio track or simple nature sounds if it helps.</li>
+    </ul>
+    <p>Stay safe and remember: a brief break can go a long way to keep you relaxed on the road.</p>
+  </div>
+
+  <script>
+    const apiKey = "sk_c2c3158aff82387b3f2160e08804e478ce239ae30e5f5478";  // Not recommended to expose
+    const voiceId = "21m00Tcm4TlvDq8ikWAM";   // e.g., "21m00Tcm4TlvDq8ikWAM"
+
+    // Speaks the provided text using ElevenLabs
+    async function speakText(text) {
+    if (!text) {
+        console.log("No text provided to speak.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "xi-api-key": apiKey
+        },
+        body: JSON.stringify({
+            text: text,
+            voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.5
+            }
+        })
+        });
+
+        if (!response.ok) {
+        throw new Error(`TTS request failed with status ${response.status}`);
+        }
+
+        // Convert response to audio data, create a Blob, and then an object URL
+        const audioArrayBuffer = await response.arrayBuffer();
+        const audioBlob = new Blob([audioArrayBuffer], { type: "audio/mpeg" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        // Play the audio and wait for it to finish
+        return new Promise((resolve) => {
+        const audio = new Audio(audioUrl);
+        audio.onended = resolve;  // Ensure we resolve only after speech finishes
+        audio.onerror = (err) => {
+            console.error("Error playing audio:", err);
+            resolve(); // Resolve to avoid blocking execution
+        };
+        audio.play();
+        });
+
+    } catch (error) {
+        console.error("Error generating/playing TTS:", error);
+    }
+    }
+
+    function startListening() {
+        return new Promise((resolve, reject) => {
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = "en-US";
+
+                console.log("Listening for speech...");
+
+                recognition.onresult = (event) => {
+                    const spokenText = event.results[0][0].transcript;
+                    console.log("User said:", spokenText);
+                    resolve(spokenText);  
+                };
+
+                recognition.onerror = (event) => {
+                    console.error("Speech recognition error:", event.error);
+                    resolve("Error in speech recognition");  
+                };
+
+                recognition.onspeechend = () => {
+                    console.log("Speech ended, stopping recognition.");
+                    recognition.stop();
+                };
+
+                recognition.start();
+            } catch (err) {
+                console.error("Error initializing speech recognition:", err);
+                resolve("Speech recognition failed.");
+            }
+        });
+    }
+
+    async function getSpeechInput() {  
+        try {
+            console.log("Waiting for speech input...");
+            const myText = await startListening();  
+            console.log("Recognized speech:", myText);  
+            return myText;  
+        } catch (error) {
+            console.error("Error capturing speech:", error);
+            return "No response detected.";
+        }
+    }
+
+    document.getElementById('pullOverBtn').addEventListener('click', async function() {
+        console.log("Button clicked! Starting TTS...");
+        speakText("Music, Breathe, or Meditate?");
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        console.log("Waiting for user speech...");
+        const userResponse = await getSpeechInput();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        document.open();
+        document.write(`<h1>${userResponse}</h1>`);
+        document.close();
+
+       
+    
+    });
+  </script>
+
+</body>
+</html>
