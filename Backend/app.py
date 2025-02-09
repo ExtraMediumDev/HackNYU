@@ -17,7 +17,7 @@ app.register_blueprint(traffic_bp, url_prefix='/api')
 @app.route('/')
 def index():
     # Serving index.html and we're trying to show proof of concept
-    return send_from_directory(app.static_folder, 'index.html')
+    return send_from_directory(app.static_folder, 'login.html')
 
 @app.route('/home')
 def home():
