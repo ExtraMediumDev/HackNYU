@@ -31,14 +31,14 @@ stress_model_id = "stress-detection-fj4xx/1"
 
 # Define history lengths (in frames) for our thresholds.
 SLEEP_HISTORY_LENGTH = 10     # 10 consecutive frames for sleep alert
-STRESS_HISTORY_LENGTH = 10    # 10 consecutive frames for stress alert
 
-# Define additional thresholds (for example, for stress confidence)
-STRESS_CONFIDENCE_THRESHOLD = 0.9  # adjust based on your model's performance
+# For stress detection, we want 8 consecutive frames with confidence >= 0.75.
+STRESS_CONSECUTIVE_LIMIT = 8
+MINIMUM_STRESS_CONFIDENCE = 0.75
 
-# Global deques to store the last N detections for sleep and stress.
+# Global deques to store the last N detections.
 sleep_history = deque(maxlen=SLEEP_HISTORY_LENGTH)
-stress_history = deque(maxlen=STRESS_HISTORY_LENGTH)
+stress_history = deque(maxlen=STRESS_CONSECUTIVE_LIMIT)
 
 @yolo_bp.route('/predict', methods=['POST'])
 def predict():
@@ -46,7 +46,7 @@ def predict():
     if 'image' not in request.files:
         return jsonify({"error": "No image provided"}), 400
 
-    # Read and decode the image file
+    # Read and decode the image file.
     file = request.files['image']
     file_bytes = file.read()
     npimg = np.frombuffer(file_bytes, np.uint8)
@@ -56,18 +56,17 @@ def predict():
     result_drowsiness = drowsiness_client.infer(img, model_id=drowsiness_model_id)
     predictions_drowsiness = result_drowsiness.get('predictions', [])
 
+    # Check for "microsleep" or "drowsy" detections.
     sleep_detected = any(
-        pred.get("class", "").lower() == "microsleep"
+        pred.get("class", "").lower() in ("microsleep", "drowsy")
         for pred in predictions_drowsiness if isinstance(pred, dict)
     )
     sleep_history.append(sleep_detected)
-    
-    # Trigger an alert if we have 10 consecutive frames with "microsleep" detected.
+    # Trigger a sleep alert if we have 10 consecutive frames with sleep detection.
     sleep_alert = (len(sleep_history) == SLEEP_HISTORY_LENGTH and all(sleep_history))
 
-    # Draw bounding boxes for drowsiness predictions
+    # Draw bounding boxes for drowsiness predictions.
     for pred in predictions_drowsiness:
-        # Ensure pred is a dictionary before drawing
         if not isinstance(pred, dict):
             continue
         cx = pred.get('x')
@@ -89,35 +88,33 @@ def predict():
     result_stress = stress_client.infer(img, model_id=stress_model_id)
     stress_predictions_raw = result_stress.get('predictions', {})
 
-    # Convert to a list if necessary.
+    # Convert the stress predictions to a list if necessary.
     if isinstance(stress_predictions_raw, dict):
         stress_predictions = []
         for label, pred in stress_predictions_raw.items():
-            # Add the label into the prediction dictionary if needed.
             pred['class'] = label
             stress_predictions.append(pred)
     else:
         stress_predictions = stress_predictions_raw
 
-    # (Optional) Uncomment and adjust the following if you wish to enable stress alerts.
-    # stress_detected = any(
-    #     (pred.get("confidence", 0) if isinstance(pred, dict) else 0) >= STRESS_CONFIDENCE_THRESHOLD
-    #     for pred in stress_predictions
-    # )
-    # stress_history.append(stress_detected)
-    # stress_alert = (len(stress_history) == STRESS_HISTORY_LENGTH and all(stress_history))
-    
-    # For now, we'll keep stress_alert disabled:
-    stress_alert = False
+    # Determine if stress is detected in this frame.
+    # We consider stress detected if there's any prediction labeled "stress" with confidence >= MINIMUM_STRESS_CONFIDENCE.
+    stress_detected = any(
+        pred.get("class", "").lower() == "stress" and pred.get("confidence", 0) >= MINIMUM_STRESS_CONFIDENCE
+        for pred in stress_predictions if isinstance(pred, dict)
+    )
+    stress_history.append(stress_detected)
+    # Trigger a stress alert if we have 8 consecutive frames with stress detected.
+    stress_alert = (len(stress_history) == STRESS_CONSECUTIVE_LIMIT and all(stress_history))
 
-    # Encode the image (with annotations) to base64 to return in JSON.
+    # Encode the image (with annotations) to base64.
     success, encoded_image = cv2.imencode('.jpg', img)
     if not success:
         return jsonify({"error": "Could not encode image"}), 500
 
     b64_image = base64.b64encode(encoded_image.tobytes()).decode('utf-8')
     
-    # Return the annotated image, predictions, and alert flags in the response.
+    # Return the annotated image, predictions, and alert flags.
     return jsonify({
         "image": b64_image,
         "drowsiness_predictions": predictions_drowsiness,
