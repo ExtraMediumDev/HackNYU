@@ -1,112 +1,362 @@
-<!DOCTYPE HTML>
-<!--
-	Phantom by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Generic - Phantom by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<!-- Wrapper -->
-			<div id="wrapper">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/modal.css" />
+  <meta charset="UTF-8" />
+  <title>My Amazing Home Page</title>
+  <!-- Inline CSS for convenience -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+    }
+    
+    body {
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    
+    
+    
+    /* Hero Section */
+    header {
+      width: 100%;
+      height: 100vh;
+      background: url('images/aesthetic.jpg') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
 
-				<!-- Header -->
-					<header id="header">
-						<div class="inner">
+    header::before {
+      /* Dark overlay */
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    
+    header h1 {
+      font-size: 3rem;
+      color: #fff;
+      z-index: 2;
+      margin-bottom: 20px;
+    }
+    
+    header p {
+      color: #fff;
+      font-size: 1.2rem;
+      max-width: 600px;
+      z-index: 2;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      z-index: 2;
+    }
+    
+    .hero-buttons button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: transform 0.3s, background-color 0.3s;
+      color: #fff;
+    }
+    
+    .btn-scroll {
+      background-color: #e67e22;
+    }
+    
+    .btn-scroll:hover {
+      transform: scale(1.05);
+      background-color: #d35400;
+    }
+    
+    .btn-shift {
+      background-color: #3498db;
+    }
+    
+    .btn-shift:hover {
+      transform: scale(1.05);
+      background-color: #2980b9;
+    }
+    
+    /* Section Titles */
+    section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    section h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.5rem;
+      position: relative;
+    }
+    
+    section h2::after {
+      content: "";
+      width: 60px;
+      height: 4px;
+      background: #e67e22;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -15px;
+    }
+    
+    /* Who Are We Section */
+    #about p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin: 0 auto;
+      max-width: 800px;
+      text-align: center;
+    }
+    
+    /* Use Cases Section */
+    #usecases table {
+      margin: 0 auto;
+      width: 80%;
+      border-collapse: collapse;
+    }
+    
+    #usecases th,
+    #usecases td {
+      border: 1px solid #ccc;
+      padding: 12px 16px;
+      text-align: center;
+    }
+    
+    #usecases th {
+      background-color: #ddd;
+      font-weight: bold;
+    }
+    
+    /* Meet the Team Section */
+    #team .team-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .team-member {
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 250px;
+      text-align: center;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+    
+    .team-member img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    
+    .team-member h3 {
+      margin-top: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .team-member p {
+      padding: 0 10px 15px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    
+    /* Back to Top Button */
+    #backToTopBtn {
+      display: none; /* Hidden by default */
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 99999;
+      font-size: 16px;
+      padding: 12px 16px;
+      border: none;
+      outline: none;
+      background-color: #e67e22;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    
+    #backToTopBtn:hover {
+      background-color: #d35400;
+    }
+  </style>
+</head>
+<body>
 
-							<!-- Logo -->
-								<a href="index.html" class="logo">
-									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Phantom</span>
-								</a>
+	<!-- Menu -->
+	<nav id="menu">
+		<h2>Menu</h2>
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="generic.html">Ipsum veroeros</a></li>
+			<li><a href="generic.html">Tempus etiam</a></li>
+			<li><a href="generic.html">Consequat dolor</a></li>
+			<li><a href="elements.html">Elements</a></li>
+		</ul>
+	</nav>
+  
+  <!-- Hero Section -->
+  <header id="home">
+    <h1>Welcome to Our Amazing Site</h1>
+    <p>
+      We create awesome products that revolutionize the way you do business. Scroll down to learn more about who we are, our product use cases, and meet our incredible team!
+    </p>
+    <div class="hero-buttons">
+      <button class="btn-scroll" onclick="smoothScrollTo('about')">Learn More</button>
+      <button class="btn-shift" onclick="nextSectionShift()">Shift the Page!</button>
+    </div>
+  </header>
+  
+  <!-- Who Are We Section -->
+  <section id="about">
+    <h2>Who Are We</h2>
+    <p>
+      We are a dedicated team of innovators, developers, and dreamers. Our passion is to create cutting-edge solutions 
+      that not only solve real-world problems but also inspire the next generation of technology enthusiasts.
+      We believe in the power of collaboration, the beauty of simplicity, and the importance of user-centric design.
+    </p>
+  </section>
+  
+  <!-- Use Cases Section -->
+  <section id="usecases">
+    <h2>Use Cases</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Industry</th>
+          <th>Problem Solved</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Healthcare</td>
+          <td>Long waiting times &amp; inefficient patient data management</td>
+          <td>Reduced wait times by 40% and improved patient data accuracy</td>
+        </tr>
+        <tr>
+          <td>Finance</td>
+          <td>Slow transactions &amp; potential security breaches</td>
+          <td>Faster processing &amp; enhanced security using encrypted workflows</td>
+        </tr>
+        <tr>
+          <td>Retail</td>
+          <td>Inventory mismanagement &amp; weak analytics</td>
+          <td>Real-time stock updates &amp; predictive insights for better sales</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  
+  <!-- Meet The Team Section -->
+  <section id="team">
+    <h2>Meet The Team</h2>
+    <div class="team-container">
+      <div class="team-member">
+        <img src="https://via.placeholder.com/250x220.png?text=Team+Member+1" alt="Team Member 1" />
+        <h3>Jane Doe</h3>
+        <p>CEO &amp; Visionary. Jane leads the team with unwavering passion and innovative thinking.</p>
+      </div>
+      <div class="team-member">
+        <img src="https://via.placeholder.com/250x220.png?text=Team+Member+2" alt="Team Member 2" />
+        <h3>John Smith</h3>
+        <p>Head of Product. John’s keen eye for user-centric design drives the product forward.</p>
+      </div>
+      <div class="team-member">
+        <img src="https://via.placeholder.com/250x220.png?text=Team+Member+3" alt="Team Member 3" />
+        <h3>Emily Clark</h3>
+        <p>Lead Engineer. Emily oversees the technical architecture and ensures top-notch performance.</p>
+      </div>
+      <div class="team-member">
+        <img src="https://via.placeholder.com/250x220.png?text=Team+Member+4" alt="Team Member 4" />
+        <h3>Michael Brown</h3>
+        <p>Operations Guru. Michael streamlines operations, enabling the team to focus on innovation.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Back to Top Button -->
+  <button id="backToTopBtn" title="Go to top">↑ Top</button>
 
-							<!-- Nav -->
-								<nav>
-									<ul>
-										<li><a href="#menu">Menu</a></li>
-									</ul>
-								</nav>
+  <!-- Inline JavaScript -->
+  <script>
+    // Smooth scrolling to any section by id
+    function smoothScrollTo(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        window.scrollTo({
+          top: section.offsetTop - 60, // accounting for fixed nav height
+          behavior: "smooth"
+        });
+      }
+    }
 
-						</div>
-					</header>
+    // "Shift the Page" functionality
+    // This will scroll to the next section, cycling through them in order
+    const sections = ["home", "about", "usecases", "team"];
+    let currentSectionIndex = 0;
+    
+    function nextSectionShift() {
+      currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+      smoothScrollTo(sections[currentSectionIndex]);
+    }
 
-				<!-- Menu -->
-					<nav id="menu">
-						<h2>Menu</h2>
-						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="generic.html">Ipsum veroeros</a></li>
-							<li><a href="generic.html">Tempus etiam</a></li>
-							<li><a href="generic.html">Consequat dolor</a></li>
-							<li><a href="elements.html">Elements</a></li>
-						</ul>
-					</nav>
+    // Back to top button
+    const backToTopBtn = document.getElementById("backToTopBtn");
 
-				<!-- Main -->
-					<div id="main">
-						<div class="inner">
-							<h1>Generic Page</h1>
-							<span class="image main"><img src="images/pic13.jpg" alt="" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
-						</div>
-					</div>
+    window.onscroll = function() {
+      scrollFunction();
+    };
 
-				<!-- Footer -->
-					<footer id="footer">
-						<div class="inner">
-							<section>
-								<h2>Get in touch</h2>
-								<form method="post" action="#">
-									<div class="fields">
-										<div class="field half">
-											<input type="text" name="name" id="name" placeholder="Name" />
-										</div>
-										<div class="field half">
-											<input type="email" name="email" id="email" placeholder="Email" />
-										</div>
-										<div class="field">
-											<textarea name="message" id="message" placeholder="Message"></textarea>
-										</div>
-									</div>
-									<ul class="actions">
-										<li><input type="submit" value="Send" class="primary" /></li>
-									</ul>
-								</form>
-							</section>
-							<section>
-								<h2>Follow</h2>
-								<ul class="icons">
-									<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands style2 fa-dribbble"><span class="label">Dribbble</span></a></li>
-									<li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
-									<li><a href="#" class="icon brands style2 fa-500px"><span class="label">500px</span></a></li>
-									<li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
-									<li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
-								</ul>
-							</section>
-							<ul class="copyright">
-								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-							</ul>
-						</div>
-					</footer>
+    function scrollFunction() {
+      // Show the button after scrolling 400px
+      if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+        backToTopBtn.style.display = "block";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    }
 
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
-	</body>
+    backToTopBtn.addEventListener("click", function() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  </script>
+</body>
 </html>
